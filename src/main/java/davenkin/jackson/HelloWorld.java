@@ -1,4 +1,4 @@
-package davenkin.maven;
+package davenkin.jackson;
 
 public class HelloWorld {
 
