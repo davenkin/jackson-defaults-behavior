@@ -3,6 +3,7 @@ package davenkin.jackson;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -17,6 +18,7 @@ public class SuccessDeserializeWithJsonCreatorConstructorTest {
     objectMapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
     User user = objectMapper.readValue("{\"name\":\"Andy\",\"age\":30,\"address\":\"1rd Street\"}", User.class);
     assertEquals("Andy", user.name);
+    assertTrue(user.jsonCreatorCalled);
     assertNull(user.address);
   }
 
@@ -24,6 +26,7 @@ public class SuccessDeserializeWithJsonCreatorConstructorTest {
     private String name;
     private int age;
     private String address;
+    private boolean jsonCreatorCalled = false;
 
     //will not be called
     public User() {
@@ -36,6 +39,7 @@ public class SuccessDeserializeWithJsonCreatorConstructorTest {
       this.name = name;
       this.age = age;
       System.out.println("@JsonCreator constructor called.");
+      this.jsonCreatorCalled = true;
     }
 
     //will not be called

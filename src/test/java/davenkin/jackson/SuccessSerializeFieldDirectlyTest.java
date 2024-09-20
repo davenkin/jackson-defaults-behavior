@@ -2,6 +2,7 @@ package davenkin.jackson;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,11 +16,12 @@ public class SuccessSerializeFieldDirectlyTest {
     objectMapper.setVisibility(PropertyAccessor.ALL, NONE);
     objectMapper.setVisibility(PropertyAccessor.FIELD, ANY);
     User user = new User("Andy");
-    System.out.println(objectMapper.writeValueAsString(user));
+    String json = objectMapper.writeValueAsString(user);
+    assertTrue(json.contains("Andy"));
   }
 
   public static class User {
-    private String name;
+    private final String name;
 
     public User(String name) {
       this.name = name;

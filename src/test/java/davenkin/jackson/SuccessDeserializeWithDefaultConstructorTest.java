@@ -1,25 +1,21 @@
 package davenkin.jackson;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.beans.ConstructorProperties;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
-public class SuccessDeserializeWithConstructorPropertiesConstructorTest {
+public class SuccessDeserializeWithDefaultConstructorTest {
   @Test
-  public void should_call_constructor_properties_constructor() throws JsonProcessingException {
+  public void should_use_default_constructor_even_with_other_constructors() throws JsonProcessingException {
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
     User user = objectMapper.readValue("{\"name\":\"Andy\",\"age\":30,\"address\":\"1rd Street\"}", User.class);
-    assertEquals("Andy", user.name);
-    assertNull(user.address);
-    assertTrue(user.constructorPropertiesConstructorCalled);
+    assertTrue(user.defaultConstructorCalled);
+    assertNull(user.name);
   }
 
   public static class User {
@@ -27,28 +23,24 @@ public class SuccessDeserializeWithConstructorPropertiesConstructorTest {
     private int age;
     private String address;
 
-    private boolean constructorPropertiesConstructorCalled = false;
+    private boolean defaultConstructorCalled = false;
 
-    //will not be called
     public User() {
-      System.out.println("No arg constructor called.");
+      System.out.println("0 arg constructor called.");
+      this.defaultConstructorCalled = true;
     }
 
-    //this constructor will be called
-    @ConstructorProperties({"name", "age"})
     public User(String name, int age) {
       this.name = name;
       this.age = age;
-      System.out.println("@ConstructorProperties constructor called.");
-      this.constructorPropertiesConstructorCalled = true;
+      System.out.println("2 arg constructor called.");
     }
 
-    //will not be called
     public User(String name, int age, String address) {
       this.name = name;
       this.age = age;
       this.address = address;
-      System.out.println("Raw multi arg constructor called.");
+      System.out.println("3 arg constructor called.");
     }
   }
 }
