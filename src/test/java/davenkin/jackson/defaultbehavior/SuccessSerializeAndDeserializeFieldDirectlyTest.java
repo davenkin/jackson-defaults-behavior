@@ -1,4 +1,4 @@
-package davenkin.jackson;
+package davenkin.jackson.defaultbehavior;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.NONE;

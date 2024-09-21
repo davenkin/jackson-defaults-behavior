@@ -1,4 +1,4 @@
-package davenkin.jackson;
+package davenkin.jackson.defaultbehavior;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

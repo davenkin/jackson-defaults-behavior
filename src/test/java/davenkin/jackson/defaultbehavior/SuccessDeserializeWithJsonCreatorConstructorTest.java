@@ -1,4 +1,4 @@
-package davenkin.jackson;
+package davenkin.jackson.defaultbehavior;
 
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static org.junit.jupiter.api.Assertions.assertEquals;
