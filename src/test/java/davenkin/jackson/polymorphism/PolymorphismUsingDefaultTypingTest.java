@@ -24,14 +24,16 @@ public class PolymorphismUsingDefaultTypingTest {
         .allowIfBaseType("davenkin")
         .allowIfBaseType("java")
         .build();
-    objectMapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL_AND_ENUMS, JsonTypeInfo.As.PROPERTY);
+    objectMapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
 
     Admin admin = new Admin();
     admin.name = "Andy";
+    admin.type = EmployeeType.ADMIN;
     admin.level = 45;
 
     Worker worker = new Worker();
     worker.name = "Mike";
+    worker.type = EmployeeType.WORKER;
     worker.location = "Shanghai";
 
     Company company = new Company();
@@ -62,10 +64,12 @@ public class PolymorphismUsingDefaultTypingTest {
 
     Admin admin = new Admin();
     admin.name = "Andy";
+    admin.type = EmployeeType.ADMIN;
     admin.level = 45;
 
     Worker worker = new Worker();
     worker.name = "Mike";
+    worker.type = EmployeeType.WORKER;
     worker.location = "Shanghai";
 
     Company company = new Company();
@@ -95,6 +99,7 @@ public class PolymorphismUsingDefaultTypingTest {
 
   public static abstract class Employee {
     public String name;
+    public EmployeeType type;
   }
 
   public static class Admin extends Employee {
@@ -103,5 +108,9 @@ public class PolymorphismUsingDefaultTypingTest {
 
   public final static class Worker extends Employee {
     public String location;
+  }
+
+  public enum EmployeeType {
+    ADMIN, WORKER
   }
 }
