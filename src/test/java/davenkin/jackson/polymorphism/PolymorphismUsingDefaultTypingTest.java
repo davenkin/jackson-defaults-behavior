@@ -38,7 +38,9 @@ public class PolymorphismUsingDefaultTypingTest {
                 .allowIfBaseType("davenkin")
                 .allowIfBaseType("java")
                 .build();
-        objectMapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL_AND_ENUMS, JsonTypeInfo.As.PROPERTY);
+        objectMapper.activateDefaultTyping(ptv,
+                ObjectMapper.DefaultTyping.NON_FINAL_AND_ENUMS,
+                JsonTypeInfo.As.PROPERTY);
 
         Company company = createCompany();
 
