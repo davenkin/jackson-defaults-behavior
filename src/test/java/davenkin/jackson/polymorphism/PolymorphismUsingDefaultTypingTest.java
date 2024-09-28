@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import com.fasterxml.jackson.databind.exc.InvalidTypeIdException;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
@@ -15,6 +16,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class PolymorphismUsingDefaultTypingTest {
+
+    @Test
+    public void should_fail_deserialize_polymorphic_types_by_default() throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
+
+        Company company = createCompany();
+
+        String json = objectMapper.writeValueAsString(company);
+        System.out.println(json);
+        assertThrows(InvalidDefinitionException.class, () -> objectMapper.readValue(json, Company.class));
+    }
+
     @Test
     public void should_use_default_typing_NON_FINAL_AND_ENUMS_for_serialization_and_deserialization() throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -31,10 +45,14 @@ public class PolymorphismUsingDefaultTypingTest {
         String json = objectMapper.writeValueAsString(company);
         System.out.println(json);
 
+        Company deserializedCompany = objectMapper.readValue(json, Company.class);
+        assertEquals("Admin", deserializedCompany.employees.get(0).name);
+        assertEquals("Worker", deserializedCompany.employees.get(1).name);
+
         // with NON_FINAL_AND_ENUMS, it even works with Object.class as the top level class (Company) also has type info injected during serialization
-        Company deserializedCompany = (Company) objectMapper.readValue(json, Object.class);
-        assertEquals("Andy", deserializedCompany.employees.get(0).name);
-        assertEquals("Mike", deserializedCompany.employees.get(1).name);
+        Company deserializedObject = (Company) objectMapper.readValue(json, Object.class);
+        assertEquals("Admin", deserializedObject.employees.get(0).name);
+        assertEquals("Worker", deserializedObject.employees.get(1).name);
     }
 
     @Test
@@ -59,19 +77,17 @@ public class PolymorphismUsingDefaultTypingTest {
 
         // but is we specifically use Company.class, it works
         Company deserializedCompany = objectMapper.readValue(json, Company.class);
-        assertEquals("Andy", deserializedCompany.employees.get(0).name);
-        assertEquals("Mike", deserializedCompany.employees.get(1).name);
+        assertEquals("Admin", deserializedCompany.employees.get(0).name);
+        assertEquals("Worker", deserializedCompany.employees.get(1).name);
     }
 
     private static Company createCompany() {
         Admin admin = new Admin();
-        admin.name = "Andy";
-        admin.type = EmployeeType.ADMIN;
-        admin.level = 45;
+        admin.name = "Admin";
+        admin.level = 2;
 
         Worker worker = new Worker();
-        worker.name = "Mike";
-        worker.type = EmployeeType.WORKER;
+        worker.name = "Worker";
         worker.location = "Shanghai";
 
         Company company = new Company();
@@ -91,7 +107,6 @@ public class PolymorphismUsingDefaultTypingTest {
 
     public static abstract class Employee {
         public String name;
-        public EmployeeType type;
     }
 
     public static class Admin extends Employee {
@@ -102,7 +117,4 @@ public class PolymorphismUsingDefaultTypingTest {
         public String location;
     }
 
-    public enum EmployeeType {
-        ADMIN, WORKER
-    }
 }
