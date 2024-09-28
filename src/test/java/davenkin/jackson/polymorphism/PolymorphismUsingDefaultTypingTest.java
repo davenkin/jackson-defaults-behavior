@@ -46,13 +46,13 @@ public class PolymorphismUsingDefaultTypingTest {
         System.out.println(json);
 
         Company deserializedCompany = objectMapper.readValue(json, Company.class);
-        assertEquals("Admin", deserializedCompany.employees.get(0).name);
-        assertEquals("Worker", deserializedCompany.employees.get(1).name);
+        assertEquals("Andy", deserializedCompany.employees.get(0).name);
+        assertEquals("Willian", deserializedCompany.employees.get(1).name);
 
         // with NON_FINAL_AND_ENUMS, it even works with Object.class as the top level class (Company) also has type info injected during serialization
         Company deserializedObject = (Company) objectMapper.readValue(json, Object.class);
-        assertEquals("Admin", deserializedObject.employees.get(0).name);
-        assertEquals("Worker", deserializedObject.employees.get(1).name);
+        assertEquals("Andy", deserializedObject.employees.get(0).name);
+        assertEquals("Willian", deserializedObject.employees.get(1).name);
     }
 
     @Test
@@ -77,17 +77,17 @@ public class PolymorphismUsingDefaultTypingTest {
 
         // but is we specifically use Company.class, it works
         Company deserializedCompany = objectMapper.readValue(json, Company.class);
-        assertEquals("Admin", deserializedCompany.employees.get(0).name);
-        assertEquals("Worker", deserializedCompany.employees.get(1).name);
+        assertEquals("Andy", deserializedCompany.employees.get(0).name);
+        assertEquals("Willian", deserializedCompany.employees.get(1).name);
     }
 
     private static Company createCompany() {
         Admin admin = new Admin();
-        admin.name = "Admin";
+        admin.name = "Andy";
         admin.level = 2;
 
         Worker worker = new Worker();
-        worker.name = "Worker";
+        worker.name = "Willian";
         worker.location = "Shanghai";
 
         Company company = new Company();
